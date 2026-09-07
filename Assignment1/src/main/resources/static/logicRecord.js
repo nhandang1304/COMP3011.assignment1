@@ -3,8 +3,13 @@ let audioRecorder;
 let recordButton = document.querySelector("#recordButton");
 let isRecording = false;
 let chunks = [];
-recordButton.addEventListener("click", startRecord()=>{
-	if 
+recordButton.addEventListener("click", ()=>{
+	if (isRecording){
+		return stopRecord();
+	}
+	else{
+		return startRecord();
+	}
 })
 
 async function startRecord(){
