@@ -23,9 +23,9 @@ async function startRecord(){
 	
 	audioRecorder.onstop = ()=> {
 			const blobAudio = new Blob(chunks, {type: "audio/webm"});
-			const url = URL.createObjectURL(blobAudio);
-			
+			const url = URL.createObjectURL(blobAudio);		
 			console.log(url);
+			uploadAudio(blobAudio);
 		};
 	
 }
@@ -38,12 +38,12 @@ async function stopRecord(){
 	
 }
 
-asyn function uploadVideo(blobAudio){
+async function uploadAudio(blobAudio){
 	const dataForm = new FormData();
-	dataForm.append("audio", blobAudio, "audioFile.webm");
+	dataForm.append("audioRecord", blobAudio, "audioFile.webm");
 	
-	const postResponse = fetch("/api/speech", { method: post, body: dataForm});
+	const postResponse = await fetch("/api/speech", { method: post, body: dataForm});
 	
 		
 	}
-}
+
