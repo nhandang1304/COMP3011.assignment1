@@ -1,5 +1,6 @@
 const constraintRecord = {audio: true};
 let audioRecorder;
+let permittedStream;
 let recordButton = document.querySelector("#recordButton");
 let isRecording = false;
 let chunks = [];
@@ -15,7 +16,8 @@ recordButton.addEventListener("click", ()=>{
 })
 
 async function startRecord(){
-	const permittedStream = await navigator.mediaDevices.getUserMedia(constraintRecord);
+	chunks = [];
+	permittedStream = await navigator.mediaDevices.getUserMedia(constraintRecord);
 	audioRecorder = new MediaRecorder(permittedStream);
 	audioRecorder.ondataavailable = (event) => { chunks.push(event.data)};
 	audioRecorder.start();	
@@ -36,14 +38,18 @@ async function stopRecord(){
 	console.log("Stop record");
 	audioRecorder.stop();
 	
+	for (const track of permittedStream.getTracks()){
+		track.stop();
+	}
+	
 }
 
 async function uploadAudio(blobAudio){
 	const dataForm = new FormData();
 	dataForm.append("audioRecord", blobAudio, "audioFile.webm");
 	
-	const postResponse = await fetch("/api/speech", { method: post, body: dataForm});
-	
+	const postResponse = await fetch("/api/speech", { method: "POST", body: dataForm});
+	return postResponse;
 		
 	}
 
