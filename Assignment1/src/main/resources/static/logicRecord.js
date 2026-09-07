@@ -5,9 +5,11 @@ let isRecording = false;
 let chunks = [];
 recordButton.addEventListener("click", ()=>{
 	if (isRecording){
+		isRecording = !isRecording;
 		return stopRecord();
 	}
 	else{
+		isRecording = !isRecording;
 		return startRecord();
 	}
 })
@@ -17,15 +19,31 @@ async function startRecord(){
 	audioRecorder = new MediaRecorder(permittedStream);
 	audioRecorder.ondataavailable = (event) => { chunks.push(event.data)};
 	audioRecorder.start();	
+	console.log("Starting record");	
+	
+	audioRecorder.onstop = ()=> {
+			const blobAudio = new Blob(chunks, {type: "audio/webm"});
+			const url = URL.createObjectURL(blobAudio);
+			
+			console.log(url);
+		};
 	
 }
 
 async function stopRecord(){
-	audioRecorder.stop();
-	audioRecorder.onstop = ()=> {
-		const blobAudio = new Blob(chunks, {type: "audio/webm"});
-	};
-	const url = URL.createObjectURL(blobAudio);
-	console.log("audioURL");
 	
+	
+	console.log("Stop record");
+	audioRecorder.stop();
+	
+}
+
+asyn function uploadVideo(blobAudio){
+	const dataForm = new FormData();
+	dataForm.append("audio", blobAudio, "audioFile.webm");
+	
+	const postResponse = fetch("/api/speech", { method: post, body: dataForm});
+	
+		
+	}
 }
