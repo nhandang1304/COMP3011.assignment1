@@ -8,7 +8,7 @@ public class RestClientConfig {
 	@Bean
 	public RestClient RestClientConfig() {
 		return RestClient.builder().baseUrl("https://api.openai.com").build();
-								.
+								
 						
 	}
 }

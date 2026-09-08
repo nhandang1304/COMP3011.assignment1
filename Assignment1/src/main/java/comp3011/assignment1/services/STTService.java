@@ -1,13 +1,15 @@
 package comp3011.assignment1.services;
 import org.springframework.web.client.RestClient;
-
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+@Service
 public class STTService {
 	private RestClient restClient;
+
 	STTService(RestClient restClient){
 		this.restClient = restClient;
 	}
