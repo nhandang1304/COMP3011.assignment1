@@ -1,11 +1,14 @@
 package comp3011.assignment1.services;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
+
+import comp3011.assignment1.models.AudioTranscriptionResponse;
+
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import comp3011.assignment1.models.AudioTranscriptionResponse;
+
 
 @Service
 public class STTService {
@@ -26,7 +29,7 @@ public class STTService {
 								.body(fileData)
 								.retrieve()
 								.body(AudioTranscriptionResponse.class);
-		globalStat.updateTokens(response.statResponse().inputTokens(), response.statResponse().outputTokens());
+		globalStat.updateTokens(response.usage().inputTokens(), response.usage().outputTokens());
 		return response;
 	}
 }

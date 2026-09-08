@@ -18,7 +18,7 @@ public class AdministrativeController {
 	@GetMapping("/admin/uptime")
 	public ServerUptimeResponse getServerUptime() {
 		Instant currentTimeResponse = Instant.now();
-		double serverUptimeSeconds = Duration.between(serverStartTime, currentTimeResponse).toMillis();
+		double serverUptimeSeconds = Duration.between(serverStartTime, currentTimeResponse).toMillis() / 1000.0;
 		return new ServerUptimeResponse(serverStartTime, currentTimeResponse, serverUptimeSeconds);
 	}
 	@GetMapping("/global/stats")
