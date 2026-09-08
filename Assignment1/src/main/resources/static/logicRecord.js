@@ -4,6 +4,7 @@ let permittedStream;
 let recordButton = document.querySelector("#recordButton");
 let stopRecordButton = document.querySelector("#stopRecord");
 let recordingStatus = document.querySelector("#recordingStatus");
+let contentResponse = document.querySelector("#contentResponse");
 
 let chunks = [];
 recordButton.addEventListener("click", startRecord)
@@ -17,11 +18,12 @@ async function startRecord(){
 	audioRecorder.start();	
 	console.log("Starting record");	
 	
-	audioRecorder.onstop = ()=> {
+	audioRecorder.onstop = async ()=> {
 			const blobAudio = new Blob(chunks, {type: "audio/webm"});
 			const url = URL.createObjectURL(blobAudio);		
 			console.log(url);
-			uploadAudio(blobAudio);
+			const response = await uploadAudio(blobAudio);
+			contentResponse.textContent = response.text;
 		};
 	
 }
@@ -43,7 +45,7 @@ async function uploadAudio(blobAudio){
 	dataForm.append("audioRecord", blobAudio, "audioFile.webm");
 	
 	const postResponse = await fetch("/api/speech", { method: "POST", body: dataForm});
-	return postResponse;
+	return postResponse.json();
 		
 	}
 

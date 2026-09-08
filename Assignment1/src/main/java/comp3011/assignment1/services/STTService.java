@@ -26,7 +26,7 @@ public class STTService {
 								.body(fileData)
 								.retrieve()
 								.body(AudioTranscriptionResponse.class);
-		globalStat.updateTokens(response.usage().inputTokens(), response.usage().outputTokens());
+		globalStat.updateTokens(response.statResponse().inputTokens(), response.statResponse().outputTokens());
 		return response;
 	}
 }
