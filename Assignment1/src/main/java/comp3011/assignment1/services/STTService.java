@@ -1,0 +1,24 @@
+package comp3011.assignment1.services;
+import org.springframework.web.client.RestClient;
+
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+public class STTService {
+	private RestClient restClient;
+	STTService(RestClient restClient){
+		this.restClient = restClient;
+	}
+	public String transcript(MultipartFile file) {
+		MultiValueMap<String, Object> fileData = new LinkedMultiValueMap<>();
+		fileData.add("file", file.getResource());
+		fileData.add("model", "gpt-4o-mini-transcribe");
+		return restClient.post().uri("/v1/audio/transcriptions")
+								.contentType(MediaType.MULTIPART_FORM_DATA)
+								.body(fileData)
+								.retrieve()
+								.body(String.class);
+	}
+}
