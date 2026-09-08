@@ -2,19 +2,11 @@ const constraintRecord = {audio: true};
 let audioRecorder;
 let permittedStream;
 let recordButton = document.querySelector("#recordButton");
-let isRecording = false;
-let chunks = [];
-recordButton.addEventListener("click", ()=>{
-	if (isRecording){
-		isRecording = !isRecording;
-		return stopRecord();
-	}
-	else{
-		isRecording = !isRecording;
-		return startRecord();
-	}
-})
+let stopRecordButton = document.querySelector("#stopRecord")
 
+let chunks = [];
+recordButton.addEventListener("click", startRecord)
+stopRecordButton.addEventListener("click", stopRecord)
 async function startRecord(){
 	chunks = [];
 	permittedStream = await navigator.mediaDevices.getUserMedia(constraintRecord);
