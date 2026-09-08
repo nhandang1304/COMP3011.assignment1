@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GlobalStatService {
-	private final long totalInputTokens;
-	private final long totalOutputTokens;
+	private long totalInputTokens;
+	private long totalOutputTokens;
 	
 	public void updateTokens(long usedInputTokens, long usedOutputTokens) {
 		totalInputTokens += usedInputTokens;

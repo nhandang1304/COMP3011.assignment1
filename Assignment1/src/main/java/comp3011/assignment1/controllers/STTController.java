@@ -11,10 +11,12 @@ public class STTController {
 	
 	public STTController(STTService sttService) {
 		this.sttService = sttService;
+		
 	}
 	@PostMapping("/api/speech")
 	public String speech(@RequestParam("audioRecord") MultipartFile audioFile) {
 		System.out.println("Speech endpoint called!");
+		
 		return sttService.transcript(audioFile);
 		
 	}
