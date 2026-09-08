@@ -11,4 +11,10 @@ public class GlobalStatService {
 		totalInputTokens += usedInputTokens;
 		totalOutputTokens += usedOutputTokens;
 	}
+	public long getInputTokens() {
+		return totalInputTokens;
+	}
+	public long getOutputTokens() {
+		return totalOutputTokens;
+	}
 }
