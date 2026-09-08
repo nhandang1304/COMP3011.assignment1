@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import comp3011.assignment1.models.AudioTranscriptionResponse;
 
 @Service
 public class STTService {
@@ -14,16 +15,18 @@ public class STTService {
 		this.restClient = restClient;
 		this.globalStat = globalStat;
 	}
-	public String transcript(MultipartFile file) {
+	public AudioTranscriptionResponse transcript(MultipartFile file) {
 		String apiKey = System.getenv("OPENAI_API_KEY");
 		MultiValueMap<String, Object> fileData = new LinkedMultiValueMap<>();
 		fileData.add("file", file.getResource());
 		fileData.add("model", "gpt-4o-mini-transcribe");
-		String response = restClient.post().uri("/v1/audio/transcriptions")
+		AudioTranscriptionResponse response = restClient.post().uri("/v1/audio/transcriptions")
 								.header("Authorization", "Bearer " + apiKey)
 								.contentType(MediaType.MULTIPART_FORM_DATA)
 								.body(fileData)
 								.retrieve()
-								.body(String.class);
+								.body(AudioTranscriptionResponse.class);
+		globalStat.updateTokens(response.statResponse().inputTokens(), response.statResponse().outputTokens());
+		return response;
 	}
 }
