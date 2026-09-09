@@ -21,10 +21,5 @@ public class AdministrativeController {
 		double serverUptimeSeconds = Duration.between(serverStartTime, currentTimeResponse).toMillis() / 1000.0;
 		return new ServerUptimeResponse(serverStartTime, currentTimeResponse, serverUptimeSeconds);
 	}
-	@GetMapping("/global/stats")
-	public GlobalStatsResponse getGlobalStat(GlobalStatService global) {
-		long inputTokens = global.getInputTokens();
-		long outputTokens = global.getOutputTokens();
-		return new GlobalStatsResponse(inputTokens, outputTokens);
-	}
+	
 }

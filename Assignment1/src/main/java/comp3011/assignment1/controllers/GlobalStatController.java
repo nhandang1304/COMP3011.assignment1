@@ -16,9 +16,9 @@ public class GlobalStatController {
 		this.globalStat = globalStat;
 	}
 	@GetMapping("/global/stats")
-	public GlobalStatsResponse getGlobalStat(GlobalStatService global) {
-		long inputTokens = global.getInputTokens();
-		long outputTokens = global.getOutputTokens();
+	public GlobalStatsResponse getGlobalStat() {
+		long inputTokens = globalStat.getInputTokens();
+		long outputTokens = globalStat.getOutputTokens();
 		return new GlobalStatsResponse(inputTokens, outputTokens);
 	}
 }
