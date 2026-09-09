@@ -13,13 +13,18 @@ import org.springframework.http.ResponseEntity;
 import comp3011.assignment1.models.ServerUptimeResponse;
 import comp3011.assignment1.models.GlobalStatsResponse;
 import comp3011.assignment1.models.ServerShutdownResponse;
+import comp3011.assignment1.models.ErrorsResponse;
 import comp3011.assignment1.services.GlobalStatService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @RestController
 @RequestMapping("/api/v1")
 public class AdministrativeController {
+	
 	private final Instant serverStartTime = Instant.now();
 	private final ConfigurableApplicationContext appContext;
+	private AtomicBoolean inShutdownProgess = new AtomicBoolean(false);
+	
 	public AdministrativeController(ConfigurableApplicationContext appContext) {
 		this.appContext = appContext;
 	}
@@ -33,6 +38,16 @@ public class AdministrativeController {
 	@PostMapping("/admin/shutdown")
 	public ResponseEntity shutdown() throws InterruptedException {
 		ServerShutdownResponse shutdownMessage = new ServerShutdownResponse("Graceful shutdown requested.");
+		
+		boolean inProgressState = inShutdownProgess.compareAndSet(false, true);
+		if (inProgressState) {
+			ErrorsResponse error = new ErrorsResponse(Instant.now(), 
+														HttpStatus.CONFLICT.value(), 
+														HttpStatus.CONFLICT.getReasonPhrase(),
+														"Graceful shutdown is already in progress.",
+														"/api/v1/admin/shutdown");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+		}
 		
 		Runnable shutdownTask = ()-> appContext.close();
 		Thread thread = new Thread(shutdownTask);
