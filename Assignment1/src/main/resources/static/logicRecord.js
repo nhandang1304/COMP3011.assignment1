@@ -10,7 +10,7 @@ let chunks = [];
 recordButton.addEventListener("click", startRecord)
 stopRecordButton.addEventListener("click", stopRecord)
 async function startRecord(){
-	recordingStatus.textContent = "Recording";
+	recordingStatus.textContent = "Recording started";
 	chunks = [];
 	permittedStream = await navigator.mediaDevices.getUserMedia(constraintRecord);
 	audioRecorder = new MediaRecorder(permittedStream);
@@ -30,7 +30,7 @@ async function startRecord(){
 
 async function stopRecord(){
 	
-	recordingStatus.textContent = "Stop Recording";
+	recordingStatus.textContent = "Recording stopped";
 	console.log("Stop record");
 	audioRecorder.stop();
 	
