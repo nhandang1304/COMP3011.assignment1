@@ -12,7 +12,7 @@ public class GlobalStatService {
 		totalInputTokens.add(usedInputTokens);
 		totalOutputTokens.add(usedOutputTokens);
 	}
-	public long getInputTokens() {
+	public long getInputTokens() { 
 		return totalInputTokens.sum();
 	}
 	public long getOutputTokens() {

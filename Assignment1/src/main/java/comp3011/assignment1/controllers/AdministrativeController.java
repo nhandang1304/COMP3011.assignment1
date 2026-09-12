@@ -5,16 +5,14 @@ import java.time.Duration;
 import java.time.Instant;
 
 
-import org.springframework.stereotype.Controller;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import comp3011.assignment1.models.ServerUptimeResponse;
-import comp3011.assignment1.models.GlobalStatsResponse;
 import comp3011.assignment1.models.ServerShutdownResponse;
 import comp3011.assignment1.models.ErrorsResponse;
-import comp3011.assignment1.services.GlobalStatService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @RestController
@@ -23,7 +21,7 @@ public class AdministrativeController {
 	
 	private final Instant serverStartTime = Instant.now();
 	private final ConfigurableApplicationContext appContext;
-	private AtomicBoolean inShutdownProgess = new AtomicBoolean(false);
+	private AtomicBoolean inShutdownProgress = new AtomicBoolean(false);
 	
 	public AdministrativeController(ConfigurableApplicationContext appContext) {
 		this.appContext = appContext;
@@ -36,10 +34,10 @@ public class AdministrativeController {
 		return new ServerUptimeResponse(serverStartTime, currentTimeResponse, serverUptimeSeconds);
 	}
 	@PostMapping("/admin/shutdown")
-	public ResponseEntity shutdown(){
+	public ResponseEntity<?> shutdown(){
 		ServerShutdownResponse shutdownMessage = new ServerShutdownResponse("Graceful shutdown requested.");
 		
-		boolean firstRequest = inShutdownProgess.compareAndSet(false, true);
+		boolean firstRequest = inShutdownProgress.compareAndSet(false, true);
 		if (!firstRequest) {
 			ErrorsResponse error = new ErrorsResponse(Instant.now(), 
 														HttpStatus.CONFLICT.value(), 

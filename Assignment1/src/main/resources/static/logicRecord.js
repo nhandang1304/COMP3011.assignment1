@@ -62,7 +62,7 @@ async function startRecord(){
 						contentResponse.textContent = response.text;
 		}
 			catch(error){
-				console.log("Upload failed:", error);
+				console.log(error.message);
 				showError("Could not upload the recording. Please try again.");
 			}
 		};
@@ -80,7 +80,7 @@ async function stopRecord(){
 			}
 	}
 	catch(error){
-			console.error("Error stopping recording:", error);
+			console.log("Error stopping recording");
 			showError("An error occurred while stopping the recording.");
 		}
 	finally{
@@ -99,14 +99,13 @@ async function uploadAudio(blobAudio){
 		
 		
 		if (!postResponse.ok){
-			const responseBody = await postResponse.text();
-			throw new Error(responseBody);
+			throw new Error("Error uploading audio");
 		}
 		
 		return postResponse.json();
 	}
 	catch(error){
-		console.log("Error uploading audio:", error);
+		
 		throw error;
 	}
 	

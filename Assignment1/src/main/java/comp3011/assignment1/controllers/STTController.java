@@ -18,7 +18,7 @@ public class STTController {
 		
 	}
 	@PostMapping("/api/speech")
-	public ResponseEntity speech(@RequestParam("audioRecord") MultipartFile audioFile) {
+	public ResponseEntity<?> speech(@RequestParam("audioRecord") MultipartFile audioFile) {
 		System.out.println("Speech endpoint called!");	
 		try {
 			return ResponseEntity.ok(sttService.transcript(audioFile));
