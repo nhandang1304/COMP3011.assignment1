@@ -5,7 +5,7 @@ let recordButton = document.querySelector("#recordButton");
 let stopRecordButton = document.querySelector("#stopRecord");
 let recordingStatus = document.querySelector("#recordingStatus");
 let contentResponse = document.querySelector("#contentResponse");
-let errorMessage = document.querySelector("#deviceAccess")
+let errorMessage = document.querySelector("#errorMessage")
 
 let chunks = [];
 recordButton.addEventListener("click", startRecord)
@@ -44,7 +44,7 @@ async function startRecord(){
 	audioRecorder.start();
 	recordingStatus.style.display = "block";
 	recordingStatus.textContent = "Recording started";
-	console.log("Upload ok");
+	
 	console.log("Starting record");	
 	
 	recordButton.disabled = true;
@@ -58,10 +58,11 @@ async function startRecord(){
 						console.log(url);
 						
 						const response = await uploadAudio(blobAudio);
+						
 						contentResponse.textContent = response.text;
 		}
 			catch(error){
-				console.error("Upload failed:", error);
+				console.log("Upload failed:", error);
 				showError("Could not upload the recording. Please try again.");
 			}
 		};
@@ -96,14 +97,16 @@ async function uploadAudio(blobAudio){
 		
 		const postResponse = await fetch("/api/speech", { method: "POST", body: dataForm});
 		
+		
 		if (!postResponse.ok){
-			throw new Error(`Server responded with status" ${postResponse.status}`);
+			const responseBody = await postResponse.text();
+			throw new Error(responseBody);
 		}
 		
 		return postResponse.json();
 	}
 	catch(error){
-		console.error("Error uploading audio:", error);
+		console.log("Error uploading audio:", error);
 		throw error;
 	}
 	

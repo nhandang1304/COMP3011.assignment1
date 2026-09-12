@@ -19,17 +19,24 @@ public class STTService {
 		this.globalStat = globalStat;
 	}
 	public AudioTranscriptionResponse transcript(MultipartFile file) {
-		String apiKey = System.getenv("OPENAI_API_KEY");
-		MultiValueMap<String, Object> fileData = new LinkedMultiValueMap<>();
-		fileData.add("file", file.getResource());
-		fileData.add("model", "gpt-4o-mini-transcribe");
-		AudioTranscriptionResponse response = restClient.post().uri("/v1/audio/transcriptions")
-								.header("Authorization", "Bearer " + apiKey)
-								.contentType(MediaType.MULTIPART_FORM_DATA)
-								.body(fileData)
-								.retrieve()
-								.body(AudioTranscriptionResponse.class);
-		globalStat.updateTokens(response.usage().inputTokens(), response.usage().outputTokens());
-		return response;
+		try {
+			String apiKey = System.getenv("OPENAI_API_KEY");
+			MultiValueMap<String, Object> fileData = new LinkedMultiValueMap<>();
+			fileData.add("file", file.getResource());
+			fileData.add("model", "gpt-4o-mini-transcribe");
+			AudioTranscriptionResponse response = restClient.post().uri("/v1/audio/transcriptions")
+									.header("Authorization", "Bearer " + apiKey)
+									.contentType(MediaType.MULTIPART_FORM_DATA)
+									.body(fileData)
+									.retrieve()
+									.body(AudioTranscriptionResponse.class);
+			globalStat.updateTokens(response.usage().inputTokens(), response.usage().outputTokens());
+			return response;
+		}
+		catch(Exception error) {
+			System.out.println("Transcript error: " + error.getMessage());
+		    throw error;
+		}
+		
 	}
 }

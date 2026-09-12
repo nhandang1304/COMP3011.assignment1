@@ -1,5 +1,6 @@
 package comp3011.assignment1.controllers;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,9 +18,14 @@ public class STTController {
 		
 	}
 	@PostMapping("/api/speech")
-	public AudioTranscriptionResponse speech(@RequestParam("audioRecord") MultipartFile audioFile) {
+	public ResponseEntity speech(@RequestParam("audioRecord") MultipartFile audioFile) {
 		System.out.println("Speech endpoint called!");	
-		return sttService.transcript(audioFile);
+		try {
+			return ResponseEntity.ok(sttService.transcript(audioFile));
+		}
+		catch (Exception error) {
+			return ResponseEntity.status(500).body(error.getMessage());
+		}
 		
 	}
 };
