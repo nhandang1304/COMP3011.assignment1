@@ -36,11 +36,11 @@ public class AdministrativeController {
 		return new ServerUptimeResponse(serverStartTime, currentTimeResponse, serverUptimeSeconds);
 	}
 	@PostMapping("/admin/shutdown")
-	public ResponseEntity shutdown() throws InterruptedException {
+	public ResponseEntity shutdown(){
 		ServerShutdownResponse shutdownMessage = new ServerShutdownResponse("Graceful shutdown requested.");
 		
-		boolean inProgressState = inShutdownProgess.compareAndSet(false, true);
-		if (inProgressState) {
+		boolean firstRequest = inShutdownProgess.compareAndSet(false, true);
+		if (!firstRequest) {
 			ErrorsResponse error = new ErrorsResponse(Instant.now(), 
 														HttpStatus.CONFLICT.value(), 
 														HttpStatus.CONFLICT.getReasonPhrase(),
@@ -49,9 +49,11 @@ public class AdministrativeController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
 		}
 		
-		Runnable shutdownTask = ()-> appContext.close();
+		Runnable shutdownTask = ()-> {try {Thread.sleep(800);}										
+									  catch (InterruptedException e) {e.printStackTrace();}
+									  appContext.close(); };
 		Thread thread = new Thread(shutdownTask);
-		thread.sleep(1000);
+		
 		thread.start();
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(shutdownMessage);
 	}

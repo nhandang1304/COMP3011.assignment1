@@ -13,16 +13,17 @@
 	
 	<h1 class="text-center">Speech to Text</h1>
     <div class="container" >
+		<p id="deviceAccess" class="alert alert-danger" style="display: none;" role="alert"></p>
 		<div class="row justify-content-around">		
 			<div class="col-4">
 							<div class="card">					  
 							  <div class="card-body">
-								<div class="alert alert-primary" role="alert">
-								  <p id="recordingStatus"></p>
-								</div>
+								
+								  <p class="alert alert-primary" role="alert" id="recordingStatus" style="display: none;"></p>
+								
 							    <p class="card-text">Click the microphone and start speaking</p>
 							    <button id="recordButton" type="button" class="btn btn-outline-danger btn-circle btn-xl"><i class="bi bi-mic"></i></button>
-								<button id="stopRecord" type="button" class="btn btn-outline-danger btn-circle btn-xl"><i class="bi bi-mic-mute-fill"></i></button>
+								<button id="stopRecord" disabled type="button" class="btn btn-outline-danger btn-circle btn-xl"><i class="bi bi-mic-mute-fill"></i></button>
 							</div>
 							</div>
 						</div>
