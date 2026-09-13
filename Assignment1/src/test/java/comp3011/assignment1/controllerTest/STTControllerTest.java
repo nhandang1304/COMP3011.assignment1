@@ -1,0 +1,42 @@
+package comp3011.assignment1.controllerTest;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
+
+import comp3011.assignment1.controllers.AdministrativeController;
+import comp3011.assignment1.controllers.STTController;
+import comp3011.assignment1.models.*;
+import comp3011.assignment1.services.STTService;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
+
+public class STTControllerTest {
+	private STTService sttService;
+	private STTController sttController;
+	private MockMultipartFile audioFile;
+	@BeforeEach
+	void setUp() {
+		sttService = mock(STTService.class);
+		sttController = new STTController(sttService);
+		audioFile = new MockMultipartFile("audioRecord", "test.wav", "audio/wav", "audioBytes".getBytes());
+	}
+	void testSpeechReturnSusccessResponse() {
+		AudioTranscriptionResponse.TokenUsage tokenUsage = new AudioTranscriptionResponse.TokenUsage(10, 5);
+        AudioTranscriptionResponse successAudioTranscript = new AudioTranscriptionResponse("Speech to text successfully", tokenUsage);
+        when(sttService.transcript(audioFile)).thenReturn(successAudioTranscript);
+        
+        ResponseEntity<?> response = sttController.speech(audioFile);
+        
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(successAudioTranscript, response.getBody());
+        
+	}
+}

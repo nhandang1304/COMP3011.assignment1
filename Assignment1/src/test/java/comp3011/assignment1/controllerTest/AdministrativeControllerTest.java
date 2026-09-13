@@ -30,7 +30,7 @@ public class AdministrativeControllerTest {
 		assertTrue(uptimeResponse.serverUptimeSeconds() >= 0);
 	}
 	@Test
-	void testShutdownSuccessfulResponse() {
+	void testShutdownSuccessResponse() {
 		ResponseEntity<?> shutdownResponse = adminController.shutdown();
 		assertEquals(HttpStatus.ACCEPTED, shutdownResponse.getStatusCode());
         assertInstanceOf(ServerShutdownResponse.class, shutdownResponse.getBody());
@@ -38,7 +38,7 @@ public class AdministrativeControllerTest {
 		
 	}
 	@Test 
-	void testShutdownUnsuccessfulResponse() {
+	void testShutdownUnsuccessResponse() {
 		adminController.shutdown();
 		ResponseEntity<?> shutdownResponse = adminController.shutdown();
 		assertEquals(HttpStatus.CONFLICT, shutdownResponse.getStatusCode());

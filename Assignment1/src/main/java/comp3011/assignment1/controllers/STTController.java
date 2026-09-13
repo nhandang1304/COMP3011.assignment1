@@ -1,4 +1,4 @@
-package comp3011.assignment1.controllers;
+ package comp3011.assignment1.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
