@@ -1,0 +1,64 @@
+package comp3011.assignment1.serviceTest;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
+import comp3011.assignment1.services.GlobalStatService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.lang.Runnable;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.Future;
+
+public class GlobalStatServiceTest {
+	private GlobalStatService globalStat;
+	@BeforeEach
+	void setUp() {
+		globalStat = new GlobalStatService();
+	}
+	@Test
+	void testFirstTokensEqualZero() {
+		assertEquals(0, globalStat.getInputTokens());
+		assertEquals(0, globalStat.getOutputTokens());
+	}
+	@Test
+	void testupdateTokens() {
+		globalStat.updateTokens(50, 60);
+		globalStat.updateTokens(70, 90);
+		assertEquals(120, globalStat.getInputTokens());
+		assertEquals(150, globalStat.getOutputTokens());
+	}
+	@Test
+	void testConcurrentUpdates()throws Exception {
+		int totalTasks = 200;
+		ExecutorService executor = Executors.newFixedThreadPool(20);
+	
+		List<Future<?>> tasks = new ArrayList<>();
+		for (int i = 0; i < totalTasks; i++) {
+	       Runnable task = new Runnable() {
+	       @Override
+	       public void run() {
+	    	   globalStat.updateTokens(1, 1);
+	       }
+	       };
+	       Future<?> future = executor.submit(task);
+
+	       tasks.add(future);
+
+		}
+	    
+	    for (Future<?> smallTask : tasks) {
+	        smallTask.get();
+	    }
+
+	    executor.shutdown();
+
+	    
+	    assertEquals(totalTasks, globalStat.getInputTokens());
+	    assertEquals(totalTasks, globalStat.getOutputTokens());
+	}
+	
+	
+	
+}
