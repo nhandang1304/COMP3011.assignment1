@@ -28,6 +28,7 @@ public class STTControllerTest {
 		sttController = new STTController(sttService);
 		audioFile = new MockMultipartFile("audioRecord", "test.wav", "audio/wav", "audioBytes".getBytes());
 	}
+	@Test
 	void testSpeechReturnSusccessResponse() {
 		AudioTranscriptionResponse.TokenUsage tokenUsage = new AudioTranscriptionResponse.TokenUsage(10, 5);
         AudioTranscriptionResponse successAudioTranscript = new AudioTranscriptionResponse("Speech to text successfully", tokenUsage);
@@ -38,5 +39,13 @@ public class STTControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertEquals(successAudioTranscript, response.getBody());
         
+	}
+	@Test
+	void testSpeechReturn500OnServiceFailure() {
+		when(sttService.transcript(audioFile)).thenThrow(new RuntimeException("STT API unreachable"));
+		 ResponseEntity<?> response = sttController.speech(audioFile);
+	        
+	        assertEquals(500, response.getStatusCode().value());
+	        assertEquals("STT API unreachable", response.getBody());
 	}
 }
