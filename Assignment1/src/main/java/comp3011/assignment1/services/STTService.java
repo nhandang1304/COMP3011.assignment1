@@ -3,15 +3,18 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
 
 import comp3011.assignment1.models.AudioTranscriptionResponse;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class STTService {
+	private static Logger logger = LoggerFactory.getLogger(STTService.class);
 	private final RestClient restClient;
 	private final GlobalStatService globalStat;
 	public STTService(RestClient restClient, GlobalStatService globalStat){
@@ -19,6 +22,7 @@ public class STTService {
 		this.globalStat = globalStat;
 	}
 	public AudioTranscriptionResponse transcript(MultipartFile file) {
+		logger.info("Transcription request with fileSize: {} bytes", file.getSize());
 		try {
 			String apiKey = System.getenv("OPENAI_API_KEY");
 			MultiValueMap<String, Object> fileData = new LinkedMultiValueMap<>();
@@ -31,10 +35,11 @@ public class STTService {
 									.retrieve()
 									.body(AudioTranscriptionResponse.class);
 			globalStat.updateTokens(response.usage().inputTokens(), response.usage().outputTokens());
+			logger.info("Transcription successful (inputTokens: {}, outputTokens: {})",response.usage().inputTokens(), response.usage().outputTokens());
 			return response;
 		}
 		catch(Exception error) {
-			System.out.println("Transcript error: " + error.getMessage());
+			logger.error("Transcription failed: {}", error.getMessage());
 		    throw error;
 		}
 		
