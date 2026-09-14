@@ -32,7 +32,7 @@ public class GlobalStatServiceTest {
 	@Test
 	void testConcurrentUpdates()throws Exception {
 		int totalTasks = 200;
-		ExecutorService executor = Executors.newFixedThreadPool(20);
+		ExecutorService executor = Executors.newFixedThreadPool(200);
 	
 		List<Future<?>> tasks = new ArrayList<>();
 		for (int i = 0; i < totalTasks; i++) {
