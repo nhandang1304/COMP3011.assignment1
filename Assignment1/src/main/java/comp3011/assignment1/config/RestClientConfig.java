@@ -3,6 +3,7 @@ package comp3011.assignment1.config;
 import org.springframework.web.client.RestClient;
 import org.springframework.context.annotation.*;
 
+// RestClient communicates with OpenAI
 @Configuration
 public class RestClientConfig {
 	@Bean

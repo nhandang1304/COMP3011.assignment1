@@ -17,6 +17,9 @@ public class GlobalStatControllerTest {
 		globalStat = mock(GlobalStatService.class);
 		globalController = new GlobalStatController(globalStat);
 	}
+	
+	// This test checks that the controller 
+	// returns the correct input and output token counts
 	@Test
 	void testCorrectGlobalStatsResponse() {
 		when(globalStat.getInputTokens()).thenReturn((long) 100);

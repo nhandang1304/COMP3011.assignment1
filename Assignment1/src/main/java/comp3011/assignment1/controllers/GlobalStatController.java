@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import comp3011.assignment1.models.GlobalStatsResponse;
 import comp3011.assignment1.services.GlobalStatService;
 
+/*This controller provides an endpoint 
+for retrieving global token usage statistics */
 @RestController
 @RequestMapping("/api/v1")
 public class GlobalStatController {
@@ -15,6 +17,7 @@ public class GlobalStatController {
 	public GlobalStatController(GlobalStatService globalStat) {
 		this.globalStat = globalStat;
 	}
+	// Return the total input and output tokens recorded by the service
 	@GetMapping("/global/stats")
 	public GlobalStatsResponse getGlobalStat() {
 		long inputTokens = globalStat.getInputTokens();

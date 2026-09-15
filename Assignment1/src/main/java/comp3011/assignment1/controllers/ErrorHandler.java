@@ -8,6 +8,9 @@ import comp3011.assignment1.models.ErrorsResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.Instant;
+
+/*This class provides global exception handling and 
+returns 500 Internal Server Error response*/
 @RestControllerAdvice
 public class ErrorHandler {
 

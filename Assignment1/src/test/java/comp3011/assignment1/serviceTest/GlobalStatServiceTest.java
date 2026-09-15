@@ -17,11 +17,15 @@ public class GlobalStatServiceTest {
 	void setUp() {
 		globalStat = new GlobalStatService();
 	}
+	
+	// This test checks that the initial input and output token counts are both zero
 	@Test
 	void testFirstTokensEqualZero() {
 		assertEquals(0, globalStat.getInputTokens());
 		assertEquals(0, globalStat.getOutputTokens());
 	}
+	// This test checks that multiple token updates are correctly added
+    // to the global input and output token totals
 	@Test
 	void testupdateTokens() {
 		globalStat.updateTokens(50, 60);
@@ -29,12 +33,17 @@ public class GlobalStatServiceTest {
 		assertEquals(120, globalStat.getInputTokens());
 		assertEquals(150, globalStat.getOutputTokens());
 	}
+	
+	// This test checks that token updates remain correct when 200 tasks
+    // update the global statistics concurrently
 	@Test
 	void testConcurrentUpdates()throws Exception {
 		int totalTasks = 200;
-		ExecutorService executor = Executors.newFixedThreadPool(200);
+		ExecutorService executor = Executors.newFixedThreadPool(200); // Thread pool to execute the update tasks concurrently
 	
 		List<Future<?>> tasks = new ArrayList<>();
+		
+		// Create 200 tasks, with each task adding one input and output token
 		for (int i = 0; i < totalTasks; i++) {
 	       Runnable task = new Runnable() {
 	       @Override
@@ -47,7 +56,7 @@ public class GlobalStatServiceTest {
 	       tasks.add(future);
 
 		}
-	    
+		 // Waits for all concurrent tasks to finish before checking the totals
 	    for (Future<?> smallTask : tasks) {
 	        smallTask.get();
 	    }

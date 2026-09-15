@@ -20,11 +20,14 @@ public class STTControllerTest {
 		sttController = new STTController(sttService);
 		audioFile = new MockMultipartFile("audioRecord", "test.wav", "audio/wav", "audioBytes".getBytes());
 	}
+	
+	// This test checks that a successful transcription returns HTTP 200
+    // and the expected transcription response
 	@Test
 	void testSpeechReturnSusccessResponse() {
 		AudioTranscriptionResponse.TokenUsage tokenUsage = new AudioTranscriptionResponse.TokenUsage(10, 5);
         AudioTranscriptionResponse successAudioTranscript = new AudioTranscriptionResponse("Speech to text successfully", tokenUsage);
-        when(sttService.transcript(audioFile)).thenReturn(successAudioTranscript);
+        when(sttService.transcript(audioFile)).thenReturn(successAudioTranscript); // Provide a successful response from the mocked STT service.
         
         ResponseEntity<?> response = sttController.speech(audioFile);
         
@@ -32,6 +35,8 @@ public class STTControllerTest {
         assertEquals(successAudioTranscript, response.getBody());
         
 	}
+	
+	// This test checks that a service failure returns HTTP 500 with the expected error details
 	@Test
 	void testSpeechReturn500OnServiceFailure() {
 		when(sttService.transcript(audioFile)).thenThrow(new RuntimeException("STT API unreachable"));

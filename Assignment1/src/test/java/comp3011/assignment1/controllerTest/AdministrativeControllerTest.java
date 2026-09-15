@@ -22,6 +22,9 @@ public class AdministrativeControllerTest {
 		appContext = mock(ConfigurableApplicationContext.class);
 		adminController = new AdministrativeController(appContext);
 	}
+	
+	// This test verifies that the uptime response contains valid time values
+    // and a non-negative server uptime
 	@Test
 	void testValidServerUptimeResponse() {
 		ServerUptimeResponse uptimeResponse = adminController.getServerUptime();
@@ -29,6 +32,9 @@ public class AdministrativeControllerTest {
 		assertNotNull(uptimeResponse.utcNow());
 		assertTrue(uptimeResponse.serverUptimeSeconds() >= 0);
 	}
+	
+	// This test verifies that the first shutdown request returns HTTP 202
+    // and the expected shutdown message
 	@Test
 	void testShutdownSuccessResponse() {
 		ResponseEntity<?> shutdownResponse = adminController.shutdown();
@@ -37,6 +43,9 @@ public class AdministrativeControllerTest {
         assertEquals("Graceful shutdown requested.", ((ServerShutdownResponse) shutdownResponse.getBody()).message());
 		
 	}
+	
+	// This test verifies that a second shutdown request is rejected with HTTP 409
+    // when a shutdown is already in progress.
 	@Test 
 	void testShutdownUnsuccessResponse() {
 		adminController.shutdown();
