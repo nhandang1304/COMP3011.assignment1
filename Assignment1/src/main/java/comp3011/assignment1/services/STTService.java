@@ -33,6 +33,8 @@ public class STTService {
 									.body(fileData)
 									.retrieve()
 									.body(AudioTranscriptionResponse.class);
+			logger.info("OpenAI input tokens: {}", response.usage().inputTokens());
+			logger.info("OpenAI output tokens: {}", response.usage().outputTokens());
 			globalStat.updateTokens(response.usage().inputTokens(), response.usage().outputTokens());
 			logger.info("Transcription successful (inputTokens: {}, outputTokens: {})",response.usage().inputTokens(), response.usage().outputTokens());
 			return response;

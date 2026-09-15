@@ -4,17 +4,28 @@ let permittedStream;
 let recordButton = document.querySelector("#recordButton");
 let stopRecordButton = document.querySelector("#stopRecord");
 let recordingStatus = document.querySelector("#recordingStatus");
+let instruction = document.querySelector("#instruction");
 let contentResponse = document.querySelector("#contentResponse");
-let errorMessage = document.querySelector("#errorMessage")
+let errorMessage = document.querySelector("#errorMessage");
+let recordingIndicator = document.querySelector("#recordingIndicator");
 
+const tooltipTriggerList = document.querySelectorAll(
+    '[data-bs-toggle="tooltip"]'
+);
+
+tooltipTriggerList.forEach(
+    tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
+);
 let chunks = [];
 recordButton.addEventListener("click", startRecord)
 stopRecordButton.addEventListener("click", stopRecord)
 
-function showError(message){
-	errorMessage.style.display = "block";
-	errorMessage.textContent = message;
-	setTimeout(()=> {errorMessage.style.display = "none";}, 3000);
+
+
+function showError(element, message){
+	element.style.display = "block";
+	element.textContent = message;
+	setTimeout(()=> {element.style.display = "none";}, 5000);
 }
 async function startRecord(){
 	
@@ -26,25 +37,28 @@ async function startRecord(){
 		
 		
 		if (error.name == "NotFoundError"){
-			 showError("Microphone not found");
+			 showError(errorMessage, "Microphone not found");
 			
 		}
 		else if (error.name == "NotAllowedError" || error.name =="PermissionDeniedError"){
 			
-			showError("Microphone permission was denied");
+			showError(errorMessage, "Microphone permission was denied");
 		}
 		else {
-			showError("An error occurred. Could not process the recording.");
+			showError(errorMessage, "An error occurred. Could not process the recording.");
 		}
 		
 		return;
 	}
 	audioRecorder = new MediaRecorder(permittedStream);
+	
 	audioRecorder.ondataavailable = (event) => { chunks.push(event.data)};
 	audioRecorder.start();
+	
+	recordingIndicator.style.display = 'block';
 	recordingStatus.style.display = "block";
 	recordingStatus.textContent = "Recording started";
-	
+	instruction.textContent = "Click the mute icon to stop recording.";
 	console.log("Starting record");	
 	
 	recordButton.disabled = true;
@@ -52,18 +66,17 @@ async function startRecord(){
 		
 	audioRecorder.onstop = async ()=> {
 		try{
+			
 			const blobAudio = new Blob(chunks, {type: "audio/webm"});
-						const url = URL.createObjectURL(blobAudio);
-							
-						console.log(url);
-						
-						const response = await uploadAudio(blobAudio);
-						
+						recordingStatus.textContent = "Uploading and transcribing...";
+						const response = await uploadAudio(blobAudio);						
 						contentResponse.textContent = response.text;
+						recordingStatus.textContent = "Transcription completed";
 		}
 			catch(error){
 				console.log(error.message);
-				showError("Could not upload the recording. Please try again.");
+				showError(recordingStatus, "Transcription fails.");
+				showError(errorMessage, "Could not upload the recording. Please try again.");
 			}
 		};
 	
@@ -72,6 +85,7 @@ async function startRecord(){
 async function stopRecord(){
 	try{
 		recordingStatus.textContent = "Recording stopped";
+		recordingIndicator.style.display = 'none';
 			console.log("Stop record");
 			audioRecorder.stop();
 			
@@ -81,9 +95,10 @@ async function stopRecord(){
 	}
 	catch(error){
 			console.log("Error stopping recording");
-			showError("An error occurred while stopping the recording.");
+			showError(errorMessage, "Please start recording before stopping.");
 		}
 	finally{
+		instruction.textContent = "Click the microphone and start speaking";
 		recordButton.disabled = false;
 		stopRecordButton.disabled = true;
 	}

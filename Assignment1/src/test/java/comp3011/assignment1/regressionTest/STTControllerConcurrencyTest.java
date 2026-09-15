@@ -6,6 +6,8 @@ import comp3011.assignment1.services.STTService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
@@ -16,6 +18,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +32,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestRestTemplate
 class STTControllerConcurrencyTest {
-
+	Logger logger = LoggerFactory.getLogger(STTControllerConcurrencyTest.class);
     @Autowired
     private TestRestTemplate restTemplate;
 
@@ -41,10 +44,9 @@ class STTControllerConcurrencyTest {
     @BeforeEach
     void setUp() {
         STTController.virtualThreadSet.clear();
-
-
+        
         AudioTranscriptionResponse mockResponse = new AudioTranscriptionResponse(
-                "Hello world", 
+                "Success transcription", 
                 new AudioTranscriptionResponse.TokenUsage(10, 5)
         );
         
@@ -102,10 +104,10 @@ class STTControllerConcurrencyTest {
 
         for (ResponseEntity<String> response : responses) {
             assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertTrue(response.getBody().contains("Hello world"));
-        }
+            assertTrue(response.getBody().contains("Success transcription"));
+        } 
 
-        System.out.printf("Total: %d and Execution time: %d ms%n", totalRequest, duration);
+        logger.info("Total: %d and Execution time: %d ms%n", totalRequest, duration);
         assertEquals(totalRequest, responses.size());
     }
 

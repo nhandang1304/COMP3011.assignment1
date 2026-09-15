@@ -38,6 +38,11 @@ public class STTControllerTest {
 		 ResponseEntity<?> response = sttController.speech(audioFile);
 	        
 	        assertEquals(500, response.getStatusCode().value());
-	        assertEquals("STT API unreachable", response.getBody());
+	        ErrorsResponse errorBody = (ErrorsResponse) response.getBody();
+
+			assertEquals(500, errorBody.status());
+			assertEquals("Internal Server Error", errorBody.error());
+			assertEquals("STT API unreachable", errorBody.message());
+			assertEquals("/api/speech", errorBody.path());
 	}
 }
