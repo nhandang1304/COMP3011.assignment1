@@ -7,10 +7,10 @@
 
 ---
 
-##I. Project Overview
+## I. Project Overview
 This project is a Spring Boot web application that converts recorded
 audio into text using a cloud-based Speech-to-Text API.
-##II. Architecture
+## II. Architecture
 **The application is divided into different components**
 
 **1. Controllers**
@@ -47,17 +47,17 @@ audio into text using a cloud-based Speech-to-Text API.
 
 - VirtualThreadConfig configures Tomcat to use Java virtual threads for handling HTTP requests.
 
-##III. Concurrency
+## III. Concurrency
 - LongAdder is used for token statistics because multiple requests may update the token counts at the same time. It safely handles these concurrent updates so that the total token counts remain accurate. 
 
 - Because the STT service waits for a response from the external API, virtual threads provide a lightweight way to handle blocking I/O. When a virtual thread is blocked while waiting for I/O, its underlying carrier thread can be used to perform other work. Therefore, the application to handle a large number of concurrent requests with minimal memory overhead.
 
-##IV. Security
+## IV. Security
 
 The Cloud STT API key is obtained from the **OPENAI_API_KEY** environment
 variable at runtime. The API key is not stored in source code and is not logged or exposed to the client.
 
-##V. Regression Testing	
+## V. Regression Testing	
 **1. STT Controller Tests**
 
 > These tests check successful transcription requests and error handling.
@@ -121,7 +121,7 @@ variable at runtime. The API key is not stored in source code and is not logged 
 
 > These tests make sure that the application can handle a high number of concurrent blocking requests without losing responses and requests are handled by virtual threads. 
 
-##VI. Logging Approach
+## VI. Logging Approach
 
 - In the application components, logs are used to record events such as audio upload, transcription success or failure, server shutdown, and whether requests are handled by virtual threads. Errors are logged to help identify failures during execution.
 
