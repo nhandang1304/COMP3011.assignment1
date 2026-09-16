@@ -127,6 +127,6 @@ variable at runtime. The API key is not stored in source code and is not logged 
 
 - In tests, logs are used to record test same information in the application components and number of concurrent requests with the total execution time.
 
-##VII. AI Assistant
+## VII. AI Assistant
 
 - In STTControllerConcurrencyTest, there is one method called 'sendConcurrentRequests()'. Because I was unsure how to create one HTTP request task for each concurrent request. I could not find a suitable example on Google, so I used AI to help understand and implement this approach.
