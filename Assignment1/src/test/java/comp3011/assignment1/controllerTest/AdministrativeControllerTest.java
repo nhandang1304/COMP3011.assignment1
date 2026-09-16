@@ -2,6 +2,8 @@ package comp3011.assignment1.controllerTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import static org.mockito.Mockito.*;
 
 
 public class AdministrativeControllerTest {
+	private static final Logger logger = LoggerFactory.getLogger(AdministrativeControllerTest.class);
 	private AdministrativeController adminController;
 	private ConfigurableApplicationContext appContext;
 	@BeforeEach
@@ -31,6 +34,8 @@ public class AdministrativeControllerTest {
 		assertNotNull(uptimeResponse.utcServerStart());
 		assertNotNull(uptimeResponse.utcNow());
 		assertTrue(uptimeResponse.serverUptimeSeconds() >= 0);
+		logger.info("Uptime response is valid (start: {}, now: {}, uptime: {} seconds)", uptimeResponse.utcServerStart(), uptimeResponse.utcNow(),uptimeResponse.serverUptimeSeconds());
+       
 	}
 	
 	// This test verifies that the first shutdown request returns HTTP 202
@@ -41,7 +46,8 @@ public class AdministrativeControllerTest {
 		assertEquals(HttpStatus.ACCEPTED, shutdownResponse.getStatusCode());
         assertInstanceOf(ServerShutdownResponse.class, shutdownResponse.getBody());
         assertEquals("Graceful shutdown requested.", ((ServerShutdownResponse) shutdownResponse.getBody()).message());
-		
+        logger.info("Shutdown request returned HTTP {} with expected message", shutdownResponse.getStatusCode().value());
+      
 	}
 	
 	// This test verifies that a second shutdown request is rejected with HTTP 409

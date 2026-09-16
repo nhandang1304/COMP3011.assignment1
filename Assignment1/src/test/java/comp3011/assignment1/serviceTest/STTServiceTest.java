@@ -2,6 +2,8 @@ package comp3011.assignment1.serviceTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +16,7 @@ import static org.mockito.Mockito.*;
 
 public class STTServiceTest {
 	private GlobalStatService mockStat;
+	private static final Logger logger = LoggerFactory.getLogger(STTServiceTest.class);
 	private RestClient mockRestClient;
 	private MultipartFile audio;
     private RestClient.RequestBodyUriSpec requestSpec;
@@ -49,6 +52,9 @@ public class STTServiceTest {
         
         assertEquals("Speech to text", result.text()); // Checks that the transcription text is returned correctly
         verify(mockStat).updateTokens(20, 8); // Checks that the returned token usage is added to global statistics
+        
+        logger.info("STT transcription (text: {}, input tokens: {}, output tokens: {})",result.text(),result.usage().inputTokens(),result.usage().outputTokens());
+        
 	}
 	
 	// This test checks that an STT API failure throw an exception
@@ -63,6 +69,8 @@ public class STTServiceTest {
 	    RuntimeException exception = assertThrows(RuntimeException.class,() -> service.transcript(audio));
 	    assertEquals("Fail to reach OpenAI", exception.getMessage());	// Checks that the original error message is preserved
 	    verify(mockStat, never()).updateTokens(anyLong(), anyLong()); // Checks that failed requests do not add token usage to the statistics
+	    logger.info("STT API failure was correctly handled with error: {}",exception.getMessage());
+        
 	}
 	
 }

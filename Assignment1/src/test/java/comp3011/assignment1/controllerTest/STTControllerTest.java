@@ -2,6 +2,8 @@ package comp3011.assignment1.controllerTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import comp3011.assignment1.controllers.STTController;
@@ -11,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class STTControllerTest {
+	private static final Logger logger = LoggerFactory.getLogger(STTControllerTest.class);
 	private STTService sttService;
 	private STTController sttController;
 	private MockMultipartFile audioFile;
@@ -33,7 +36,8 @@ public class STTControllerTest {
         
         assertEquals(200, response.getStatusCode().value());
         assertEquals(successAudioTranscript, response.getBody());
-        
+        logger.info("Speech transcription succeeded with HTTP {} and response: {}",response.getStatusCode().value(), response.getBody());
+      
 	}
 	
 	// This test checks that a service failure returns HTTP 500 with the expected error details
@@ -49,5 +53,7 @@ public class STTControllerTest {
 			assertEquals("Internal Server Error", errorBody.error());
 			assertEquals("STT API unreachable", errorBody.message());
 			assertEquals("/api/speech", errorBody.path());
+			logger.info("Speech transcription failure correctly returned HTTP {} with error: {}",errorBody.status(),errorBody.message());
+	       
 	}
 }

@@ -1,4 +1,4 @@
-package comp3011.assignment1.regressionTest;
+package comp3011.assignment1.conccurrencyTest;
 
 import comp3011.assignment1.controllers.STTController;
 import comp3011.assignment1.models.AudioTranscriptionResponse;
@@ -43,7 +43,7 @@ class STTControllerConcurrencyTest {
 
     @MockitoBean
     private STTService sttService; // Replaces the real STT service 
-    private int totalRequest = 200;
+    private int totalRequest = 250;
 
     @BeforeEach
     void setUp() {
@@ -82,23 +82,28 @@ class STTControllerConcurrencyTest {
         return new HttpEntity<>(body, headers);
     }
 
-   // Sends 200 HTTP requests concurrently.
+	/*
+	 * Sends 250 HTTP requests concurrently. (AI assistance was used for this
+	 * part of the code because I was unsure how to create one HTTP request task
+	 * for each concurrent request. I could not find a suitable example on
+	 * Google, so I used AI to help understand and implement this approach.
+	 */    
     private List<ResponseEntity<String>> sendConcurrentRequests() throws Exception {
         ExecutorService executor = Executors.newFixedThreadPool(totalRequest); // Create threads to send multiple requests concurrently
         HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity();
         
         List<Callable<ResponseEntity<String>>> tasks = new ArrayList<>();
         
-        // Creates one HTTP request task for each concurrent request
+        // Create one HTTP request task for each concurrent request 
         for (int i = 0; i < totalRequest; i++) {
             tasks.add(() -> restTemplate.postForEntity("/api/speech", requestEntity, String.class));
         }
 
-     // Runs all request tasks concurrently and waits for their completion
+     // Run all request tasks concurrently and waits for their completion
         List<Future<ResponseEntity<String>>> futures = executor.invokeAll(tasks);
         executor.shutdown();
 
-     // Collects the response from each completed request
+     // Collect the response from each completed request
         List<ResponseEntity<String>> responses = new ArrayList<>();
         for (Future<ResponseEntity<String>> future : futures) {
             responses.add(future.get(10, TimeUnit.SECONDS));
@@ -109,7 +114,7 @@ class STTControllerConcurrencyTest {
     // This test checks if all requests return HTTP 200 and
     // contain the expected transcription
     @Test
-    void shouldHandle200ConcurrentRequestsSuccessfully() throws Exception {
+    void shouldHandle250ConcurrentRequestsSuccessfully() throws Exception {
         long startTime = System.currentTimeMillis();
         List<ResponseEntity<String>> responses = sendConcurrentRequests();
         long duration = System.currentTimeMillis() - startTime;
@@ -121,7 +126,7 @@ class STTControllerConcurrencyTest {
         } 
 
         logger.info("Total: %d and Execution time: %d ms%n", totalRequest, duration);
-        assertEquals(totalRequest, responses.size()); // Checks that all 200 requests produced response
+        assertEquals(totalRequest, responses.size()); // Checks that all 250 requests produced response
     }
     
     // This test checks if all requests reaching the STT controller are handled by

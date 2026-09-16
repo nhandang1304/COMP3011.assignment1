@@ -6,9 +6,11 @@ import comp3011.assignment1.services.GlobalStatService;
 import comp3011.assignment1.models.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GlobalStatControllerTest {
+	 private static final Logger logger = LoggerFactory.getLogger(GlobalStatControllerTest.class);
 	private GlobalStatService globalStat;
 	private GlobalStatController globalController;
 	
@@ -27,5 +29,7 @@ public class GlobalStatControllerTest {
 		GlobalStatsResponse statResponse = globalController.getGlobalStat();
 		assertEquals(100, statResponse.inputTokens());
 		assertEquals(50, statResponse.outputTokens());
+		logger.info("Global statistics response is correct (input tokens: {}, output tokens: {})",statResponse.inputTokens(),statResponse.outputTokens());
+        
 	}
 } 
